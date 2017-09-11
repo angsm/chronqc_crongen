@@ -95,7 +95,7 @@ def compose_mail( link_dict, display_directory ):
                 notice_pts += "<a href=" + windows_link  + ">" + windows_link  + "</a>\n\n"
 
         email_notice = email_notice % (notice_pts)
-        utils.send_email(to_arr, from_arr, email_notice, subject, smtp_server)
+        utils.send_email(test_arr, from_arr, email_notice, subject, smtp_server)
 
 def main():
 
@@ -116,7 +116,11 @@ def main():
 	try:
 
 		to_directory = config_data["iomanip"]["destination"]
-		display_directory = config_data["iomanip"]["display_destination"]
+		display_directory = ""
+		if ("dislay_destination" in config_data["iomanip"].keys()) and (config_data["iomanip"]["display_destination"] != "")  :
+			display_directory = config_data["iomanip"]["display_destination"]
+		else:
+			display_directory = to_directory
 
 		## make directory for this month
 		curr_date = time.strftime("%d_%b_%Y")
