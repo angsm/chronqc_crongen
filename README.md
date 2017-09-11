@@ -1,7 +1,8 @@
 # ChronQC CronGen
 
 ## Requirements
-- ChronQC
+- [ChronQC](https://github.com/nilesh-tawari/ChronQC)
+- [ChronQC json files](http://chronqc.readthedocs.io/en/latest/plots/plot_options.html)
 - Python 2.6 and above
 
 ## Description
