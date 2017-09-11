@@ -21,14 +21,17 @@ For [iomanip] section, "DISPLAY_DESTINATION" can be used when transfering the pl
 ```
 [path] 
 LOG = <log file location> 
+
 [email] 
 TO = <email 1>, <email 2>
 HOST = <from email address> 
 CC = <cc email 1>, <cc email 2>
-SMTP_SERVER = <smpt server ip address> 
+SMTP_SERVER = <smpt server ip address>
+
 [template] 
 SUBJECT = [ Monthly QC statistics ] Month of %s 
 NOTICE = <br>Dear Users,</br> <p><br>ChronQC plots are ready for viewing in:  <br>%s</br></br></p><br>Thank you.</br><br>*** This is an automated mail, please do not reply ***</br> 
+
 [chronqc] 
 JSON_DIR = ./CONFIG/JSON 
 DATABASE = ./DATABASE/statsplot.sqlite 
