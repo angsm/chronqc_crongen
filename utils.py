@@ -49,18 +49,10 @@ def send_email(TO, FROM, TEXT, SUB, smtp_server, CC=[]):
         s.sendmail(msg['from'], email_addresses, msg.as_string())
         s.quit()
 
-def read_ini():
-
-	## Read config and get default parameters
-	sdir = op.dirname(op.abspath('__file__'))
-	config_file = op.join(sdir, 'config', 'chronqc.conf')
-	Config.read(config_file)
-    	# [ignore_columns]
-	ignore_columns = Config.get('ignore_columns', 'columns').split(',')
-	ignore_columns = [s.strip() for s in ignore_columns]
-	logger.info("Finished reading parameters from config file for generating chronqc db and json")
-
 class custparser(ConfigParser.ConfigParser):
+	'''
+	Reads an .ini file using ConfigParser and transform it into a dictionary for easy reading
+	'''
 	def as_dict(self):
 
 		d = dict(self._sections)

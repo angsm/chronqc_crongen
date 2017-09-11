@@ -1,3 +1,7 @@
+"""
+@author: Shimin
+"""
+
 import subprocess
 import sys
 from shutil import copyfile
@@ -115,6 +119,7 @@ def main():
 
 	try:
 
+		## set output directory and directory to be displayed in email
 		to_directory = config_data["iomanip"]["destination"]
 		display_directory = ""
 		if ("dislay_destination" in config_data["iomanip"].keys()) and (config_data["iomanip"]["display_destination"] != "")  :
@@ -136,7 +141,7 @@ def main():
 		print traceback.format_exc()
 		logging.error(traceback.format_exc())
 
-	logging.info('FINISHED without issues')
+	logging.info('FINISHED without issues\n\n')
 
 if __name__ == "__main__":
 	main()
