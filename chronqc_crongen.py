@@ -13,6 +13,7 @@ import datetime
 import argparse
 import logging
 import time
+import re
 
 import traceback
 
@@ -33,7 +34,6 @@ def check_argument():
 	'''
 	Checks this script's input and provide prompt if necessary
 	'''
-
 	global args
 
 	parser = argparse.ArgumentParser(description='Generates ChronQC commands and runs them. An email will be sent when generation complates')
@@ -58,7 +58,9 @@ def call_plots( to_directory ):
         ## generate and call Chronqc commands
         link_dict = {}
         for j in json_dict.keys():
-                command = cmd % ( database, json_dir + "/" + json_dict[j], j.upper())
+		json_path = os.path.join( json_dir, json_dict[j] )
+                command = cmd % ( database, j.upper(), json_path)
+
 		print command
 
                 logging.info( command )
@@ -73,7 +75,8 @@ def call_plots( to_directory ):
                 filename = (data[-1].split("/"))[-1]
 
                 ## copy to directory
-                os.system("sudo cp " + data[-1] + " " + to_directory + "/" + filename)
+                os.system("sudo cp " + data[-1] + " " + os.path.join( to_directory, filename ))
+		os.remove( data[-1] )
                 link_dict[j] = filename
 
 	return link_dict
@@ -87,19 +90,25 @@ def compose_mail( link_dict, display_directory ):
 
         to_arr = config_data["email"]["to"].split(',')
         from_arr = config_data["email"]["host"].split(',')
-        test_arr = config_data["email"]["test"].split(',')
         subject = config_data["template"]["subject"] % ( datetime.datetime.now().strftime("%B %Y"))
 
         email_notice = config_data["template"]["notice"]
 	smtp_server = config_data["email"]["smtp_server"]
 
         for l in link_dict.keys():
-                windows_link = display_directory + "\\" + link_dict[l]
+
+		is_windows = re.match( r'\w:\\', display_directory )
+                windows_link = os.path.join(display_directory, link_dict[l])
+
+		## if link is "<drive letter>:/", then make sure all slashes are back slashes
+		if is_windows:
+			windows_link = windows_link.replace("/", "\\")
+
                 notice_pts += "<br><b>" + l.upper() + "</b>:</br>"
                 notice_pts += "<a href=" + windows_link  + ">" + windows_link  + "</a>\n\n"
 
         email_notice = email_notice % (notice_pts)
-        utils.send_email(test_arr, from_arr, email_notice, subject, smtp_server)
+        utils.send_email(to_arr, from_arr, email_notice, subject, smtp_server)
 
 def main():
 
@@ -122,15 +131,17 @@ def main():
 		## set output directory and directory to be displayed in email
 		to_directory = config_data["iomanip"]["destination"]
 		display_directory = ""
-		if ("dislay_destination" in config_data["iomanip"].keys()) and (config_data["iomanip"]["display_destination"] != "")  :
+		if ("display_destination" in config_data["iomanip"].keys()) and (config_data["iomanip"]["display_destination"] != "")  :
 			display_directory = config_data["iomanip"]["display_destination"]
 		else:
 			display_directory = to_directory
 
 		## make directory for this month
 		curr_date = time.strftime("%d_%b_%Y")
-		to_directory += "/" + curr_date
-		display_directory += "/" + curr_date
+		to_directory = os.path.join( to_directory, curr_date )
+		display_directory = os.path.join(display_directory, curr_date)
+
+		logging.info( 'ABS_PATH: %s DISPLAY_PATH: %s' % ( to_directory, display_directory ))
 	
 		link_dict = call_plots( to_directory )
 
@@ -138,8 +149,9 @@ def main():
 		compose_mail( link_dict, display_directory )
 
 	except Exception:
-		print traceback.format_exc()
 		logging.error(traceback.format_exc())
+		logging.info( 'FINISHED with issues' )
+		sys.exit(1)
 
 	logging.info('FINISHED without issues\n\n')
 
