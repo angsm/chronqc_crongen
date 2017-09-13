@@ -1,20 +1,18 @@
 ChronQC CronGen
 =================
-Automates the generation of one or more ChronQC plots, using a .ini input file as configuration. 
-An email notification will be send out to users once generation has complete. Generates a log event file as well, to record the ChronQC commands that has been used and its run date.
+Can be used for the automation of generation of ChronQC plots from a ChronQC statistics database (chronqc.stats.sqlite) or custom SQLite database. The database must contain information on sequencing runs, run dates, and laboratory or bioinformatics QC metrics. The settings for generating ChronQC plot can be specified in a configuration file (.ini). An email notification will be send out to users once generation has complete. Generates a log event file as well, to record the ChronQC commands that has been used and its run date.
 
-Just edit the configuration file with the panel name and json file name to generate more ChronQC commands
+Edit the configuration file with the panel name and json file name to generate ChronQC plots.
 
 .. contents:: **Table of Contents**
 
 
 Requirements
 ============
-* `ChronQC 1.0.4 and above <https://github.com/nilesh-tawari/ChronQC>`_
-* `ChronQC json files <http://chronqc.readthedocs.io/en/latest/plots/plot_options.html>`_
 * Python 2.6 and above
+* `ChronQC 1.0.3 and above <https://github.com/nilesh-tawari/ChronQC>`_
+* `ChronQC json file <http://chronqc.readthedocs.io/en/latest/plots/plot_options.html>`_
 * crontab `configuration <https://crontab.guru/>`_
-
 
 Execute it
 ==========
@@ -27,7 +25,7 @@ To run it, execute the command below:
 
 ..
 
-To run it on crontab scheduler (etc. every month):
+To run it on crontab scheduler periodically (etc. every month):
 
 .. code-block:: 
  0 0 1 * * python chronqc_crongen.py <.ini configuration file>
