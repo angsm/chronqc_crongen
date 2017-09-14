@@ -1,6 +1,8 @@
 ChronQC CronGen
 =================
-Can be used for the automation of generation of ChronQC plots from a ChronQC statistics database (chronqc.stats.sqlite) or custom SQLite database. The database must contain information on sequencing runs, run dates, and laboratory or bioinformatics QC metrics. The settings for generating ChronQC plot can be specified in a configuration file (.ini). An email notification will be sent out to the users after the plots are generated. This script also generates a log event file, to record the ChronQC commands that have been used.
+Can be used for the automation of generation of ChronQC plots from a ChronQC statistics database (chronqc.stats.sqlite) or custom SQLite database. The database must contain information on sequencing runs, run dates, and laboratory or bioinformatics QC metrics. 
+
+The settings for generating ChronQC plot can be specified in a configuration file (.ini). An email notification will be sent out to the users after the plots are generated. This script also generates a log event file to record the ChronQC commands that have been used.
 
 Edit the configuration file with the panel name and json file name to generate ChronQC plots.
 
@@ -36,14 +38,9 @@ I / O
 INPUT: CronGen .ini Configuration File
 --------------------------------------
 
-The headers and parameters shown below are mandatory.   
-
-*For [iomanip] section, "DISPLAY_DESTINATION" can be used when transfering the plots to a mounted Windows drive from a Linux system. This is so that the email notification that shows up on a Window user's computer will be valid and understandable by Windows explorer.*  
+The headers and parameters shown below are mandatory.  All paths should be **absolute**.
 
 .. code-block:: ini
-
- [path] 
- LOG = <log file location> 
 
  [email] 
  TO = <email 1>, <email 2>
@@ -56,25 +53,30 @@ The headers and parameters shown below are mandatory.
  NOTICE = <br>Dear Users,</br> <p><br>ChronQC plots are ready for viewing in:  <br>%s</br></br></p><br>Thank you.</br><br>*** This is an  automated mail, please do not reply ***</br> 
 
  [chronqc] 
- JSON_DIR = ./CONFIG/JSON 
- DATABASE = ./DATABASE/statsplot.sqlite 
- GEN_CMD = chronqc plot -db %s -json %s -panel %s -f 
+ DATABASE = <database path>
+ GEN_CMD = chronqc plot -o %s %s %s %s
  
  [chronqc_json] 
- <panel name 1> = <panel 1>.json 
- <panel name 2> = <panel 2>.json 
+ <panel name 1> = <panel 1 .json path>
+ <panel name 2> = <panel 2 .json path>
  
  [iomanip] 
- DESTINATION = <ChronQC output directory> 
- DISPLAY_DESTINATION = <directory displayed in email>
-
+ DESTINATION = <ChronQC output directory>
+ 
 ..
 
-OUTPUT: Dated folder
---------------------
-A output folder named based on the date format: 'DD_MON_YYYY' will be created in the directory specified by "iomanip"'s DESTINATION tag in the .ini config file::
+
+OUTPUT: ChronQC Graphs in Dated folder | Log File
+-------------------------------------------------
+A output folder named based on the date format: 'DD_MON_YYYY' will be created in the directory specified by "iomanip"'s DESTINATION tag in the .ini config file:
+
+.. code-block:: ini
 
  [iomanip] 
  DESTINATION = <ChronQC output directory>
  
+..
+ 
 The output ChronQC HTML files are stored in this the folder.
+
+A log file detailing the events of the CronGen process will be present in the working directory of this script.
