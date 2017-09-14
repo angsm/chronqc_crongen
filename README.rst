@@ -38,9 +38,10 @@ I / O
 INPUT: CronGen .ini Configuration File
 --------------------------------------
 
-The headers and parameters shown below are mandatory.  All paths should be absolute.
+The headers and parameters shown below are mandatory.  All paths should be **absolute**.
 
 .. code-block:: ini
+
  [email] 
  TO = <email 1>, <email 2>
  HOST = <from email address> 
@@ -60,16 +61,20 @@ The headers and parameters shown below are mandatory.  All paths should be absol
  <panel name 2> = <panel 2 .json path>
  
  [iomanip] 
- DESTINATION = <ChronQC output directory> 
+ DESTINATION = <ChronQC output directory>
+ 
 ..
+
 
 OUTPUT: ChronQC Graphs in Dated folder | Log File
 -------------------------------------------------
-A output folder named based on the date format: 'DD_MON_YYYY' will be created in the directory specified by "iomanip"'s DESTINATION tag in the .ini config file::
+A output folder named based on the date format: 'DD_MON_YYYY' will be created in the directory specified by "iomanip"'s DESTINATION tag in the .ini config file:
 
 .. code-block:: ini
+
  [iomanip] 
  DESTINATION = <ChronQC output directory>
+ 
 ..
  
 The output ChronQC HTML files are stored in this the folder.
