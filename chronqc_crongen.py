@@ -23,11 +23,11 @@ except:
 	import utils
 
 try:
-    import configparser
-    config = configparser.SafeConfigParser()  # ver. < 3.0
+	import configparser
+	config = configparser.SafeConfigParser()  # ver. < 3.0
 except:
-    import ConfigParser
-    config = ConfigParser.SafeConfigParser()
+	import ConfigParser
+	config = ConfigParser.SafeConfigParser()
 
 
 def check_argument():
@@ -36,7 +36,8 @@ def check_argument():
 	'''
 	global args
 
-	parser = argparse.ArgumentParser(description='Generates ChronQC commands and runs them. An email will be sent when generation complates')
+	parser = argparse.ArgumentParser(description='Generates ChronQC commands and runs them.\
+	 An email will be sent when generation complates')
 	parser.add_argument('config_file', help='path of configuration file for this script', type=str)
 
 	args = parser.parse_args()
@@ -49,7 +50,6 @@ def call_plots( to_directory ):
 	logging.info( 'START generating ChronQC commands:')
 
         json_dict = config_data["chronqc_json"]
-        json_dir = config_data["chronqc"]["json_dir"]
         database = config_data["chronqc"]["database"]
 	cmd = config_data["chronqc"]["gen_cmd"]
 
@@ -58,10 +58,8 @@ def call_plots( to_directory ):
         ## generate and call Chronqc commands
         link_dict = {}
         for j in json_dict.keys():
-		json_path = os.path.join( json_dir, json_dict[j] )
+		json_path = json_dict[j]
                 command = cmd % ( database, j.upper(), json_path)
-
-		print command
 
                 logging.info( command )
 
@@ -74,7 +72,7 @@ def call_plots( to_directory ):
 
                 filename = (data[-1].split("/"))[-1]
 
-                ## copy to directory
+		## move to directory using os.system, avoids any permission issue 
                 os.system("sudo cp " + data[-1] + " " + os.path.join( to_directory, filename ))
 		os.remove( data[-1] )
                 link_dict[j] = filename
@@ -123,7 +121,7 @@ def main():
 	file.read(args.config_file)
 	config_data = file.as_dict()
 
-	logging.basicConfig(filename=config_data["path"]["log"],level=logging.DEBUG)
+	logging.basicConfig(filename='./chronqc_crongen.log',level=logging.DEBUG)
 	logging.info('STARTED crongen on %s' % now)
 
 	try:
@@ -140,7 +138,6 @@ def main():
 		curr_date = time.strftime("%d_%b_%Y")
 		to_directory = os.path.join( to_directory, curr_date )
 		display_directory = os.path.join(display_directory, curr_date)
-
 		logging.info( 'ABS_PATH: %s DISPLAY_PATH: %s' % ( to_directory, display_directory ))
 	
 		link_dict = call_plots( to_directory )
