@@ -1,6 +1,10 @@
-ChronQC CronGen
-=================
-Can be used for the automation of generation of ChronQC plots from a ChronQC statistics database (chronqc.stats.sqlite) or custom SQLite database. The database must contain information on sequencing runs, run dates, and laboratory or bioinformatics QC metrics. 
+Automating ChronQC
+==================
+ChronQC plot generation can be automated in two stages,
+
+1. Use "chronqc database" command as part of bioinformatics pipeline to update the ChronQC SQLite database (chronqc.stats.sqlite) with statistics . 
+
+2. The script "chronqc_crongen.py" Can be used for the automation of generation of ChronQC plots from a ChronQC statistics database (chronqc.stats.sqlite) or custom SQLite database. The database must contain information on sequencing runs, run dates, and laboratory or bioinformatics QC metrics. 
 
 The settings for generating ChronQC plot can be specified in a configuration file (.ini). An email notification will be sent out to the users after the plots are generated. This script also generates a log event file to record the ChronQC commands that have been used.
 
