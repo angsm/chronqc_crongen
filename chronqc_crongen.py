@@ -95,7 +95,7 @@ def compose_mail( link_dict, display_directory ):
 
         for l in link_dict.keys():
 
-		is_windows = re.match( r'\w:\\', display_directory )
+		is_windows = re.match( r'\w\:\\', display_directory )
                 windows_link = os.path.join(display_directory, link_dict[l])
 
 		## if link is "<drive letter>:/", then make sure all slashes are back slashes
@@ -107,6 +107,18 @@ def compose_mail( link_dict, display_directory ):
 
         email_notice = email_notice % (notice_pts)
         utils.send_email(to_arr, from_arr, email_notice, subject, smtp_server)
+
+def alert_admin( tracestack ):
+	'''
+	Alert the admins
+	'''
+	to_arr = config_data["email"]["admin"].split(',')
+	from_arr = config_data["email"]["host"].split(',')
+	email_notice = "There was an error in generating the plots:<p>" + tracestack + "</p><br>*** This is an automated mail, please do not reply ***</br>"
+	subject = "Error in ChronQC: " + ( datetime.datetime.now().strftime("%B %Y") )
+	smtp_server = config_data["email"]["smtp_server"]
+
+	utils.send_email(to_arr, from_arr, email_notice, subject, smtp_server)
 
 def main():
 
@@ -125,7 +137,6 @@ def main():
 	logging.info('STARTED crongen on %s' % now)
 
 	try:
-
 		## set output directory and directory to be displayed in email
 		to_directory = config_data["iomanip"]["destination"]
 		display_directory = ""
@@ -147,6 +158,7 @@ def main():
 
 	except Exception:
 		logging.error(traceback.format_exc())
+		alert_admin(traceback.format_exc())
 		logging.info( 'FINISHED with issues' )
 		sys.exit(1)
 
